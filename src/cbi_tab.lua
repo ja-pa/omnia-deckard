@@ -48,10 +48,10 @@ sf.default = 1
 btn_download_log = d:taboption("deckard",Button, "_btn_download_log", translate("Download log"))
 
 function btn_download_log.write()
-    luci.http.prepare_content("text/plain")
-    luci.http.write("Haha, rebooting now...")
-    --luci.sys.reboot()
-    return 
+	luci.http.prepare_content("text/plain")
+	luci.http.write("Haha, rebooting now...")
+	luci.sys.reboot()
+	return
 end
 
 
@@ -70,7 +70,7 @@ function btn_test_domain.write()
 	local test_status
 	local tbl_net_tests
 	local tbl_net_stats
-	
+
 	ret_net=test_deckard_network()
 	ret_net_stats=ret_net["stats"]
 	ret_net_tests=ret_net["tests"]
@@ -88,7 +88,7 @@ function btn_test_domain.write()
 		tbl_stats= tbl_stats .. '<tr><th>Failed tests (network)</th><td>' .. ret_net_stats["failures"] .. '</td></tr>'
 	end
 	tbl_stats = tbl_stats .. "</table>"
-	
+
 	tbl_tests=  '<h2>Test results (forwarder)</h2><table style="table-layout:fixed;width: 800px;">\n<tr><th>Test name</th><th>Status</th></tr>'
 	for key,value in pairs(ret_tests) do
 
@@ -106,30 +106,29 @@ function btn_test_domain.write()
 			tbl_tests = tbl_tests .. "<tr><td>" .. value["name"] .. "</td><td>" .. test_status .. "</td></tr>\n"
 		end
 	end
-    	tbl_tests=tbl_tests .. "</table>"
+	tbl_tests=tbl_tests .. "</table>"
 	if test_network == "1" then
-	tbl_tests=tbl_tests ..  '<h2>Test results (network)</h2><table style="table-layout:fixed;width: 800px;">\n<tr><th>Test name</th><th>Status</th></tr>'
-	for key,value in pairs(ret_net_tests) do
+		tbl_tests=tbl_tests ..  '<h2>Test results (network)</h2><table style="table-layout:fixed;width: 800px;">\n<tr><th>Test name</th><th>Status</th></tr>'
+		for key,value in pairs(ret_net_tests) do
 
-		if tostring(value["failed"]) == "true" then
-			test_status = '<span style="color:red">Failed</span>'
-		else
-			test_status = '<span style="color:green">OK</span>'
-		end
-
-    		if only_failed == "1" then
 			if tostring(value["failed"]) == "true" then
+				test_status = '<span style="color:red">Failed</span>'
+			else
+				test_status = '<span style="color:green">OK</span>'
+			end
+
+			if only_failed == "1" then
+				if tostring(value["failed"]) == "true" then
+					tbl_tests = tbl_tests .. "<tr><td>" .. value["name"] .. "</td><td>" .. test_status .. "</td></tr>\n"
+				end
+			else
 				tbl_tests = tbl_tests .. "<tr><td>" .. value["name"] .. "</td><td>" .. test_status .. "</td></tr>\n"
 			end
-		else
-			tbl_tests = tbl_tests .. "<tr><td>" .. value["name"] .. "</td><td>" .. test_status .. "</td></tr>\n"
 		end
-	end
-    	tbl_tests=tbl_tests .. "</table>"
+		tbl_tests=tbl_tests .. "</table>"
 	end
 
 
-	
 	--local aaa=uci:get("resolver", "common", "forward_upstream")
 
 	luci.template.render("myapp-mymodule/view_tab", {tbl_stat=tbl_stats,tbl_results=tbl_tests})
