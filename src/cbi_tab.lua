@@ -50,7 +50,7 @@ btn_download_log = d:taboption("deckard",Button, "_btn_download_log", translate(
 function btn_download_log.write()
 	luci.http.prepare_content("text/plain")
 	luci.http.write("Haha, rebooting now...")
-	luci.sys.reboot()
+	--luci.sys.reboot()
 	return
 end
 
