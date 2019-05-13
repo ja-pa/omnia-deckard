@@ -131,7 +131,7 @@ function btn_test_domain.write()
 
 	--local aaa=uci:get("resolver", "common", "forward_upstream")
 
-	luci.template.render("myapp-mymodule/view_tab", {tbl_stat=tbl_stats,tbl_results=tbl_tests})
+	luci.template.render("dns-diagnostics/view_tab", {tbl_stat=tbl_stats,tbl_results=tbl_tests})
 end
 
 
